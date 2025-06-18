@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\AIController;
+use App\Http\Controllers\SarimaxController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,3 +19,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/ask-deepseek', [AIController::class, 'askDeepSeek']);
+
+Route::post('/predict', [SarimaxController::class, 'predict']);

@@ -1,80 +1,111 @@
-@extends('layouts.admin')
+<h1 class="h3 mb-4 text-gray-800">Add New Dataset</h1>
 
-@section('main-content')
-    <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">{{ $title ?? __('Blank Page') }}</h1>
+@if (session('filename_conflict'))
+    <div class="alert alert-warning">
+        {{ session('message') }}
+    </div>
+@endif
 
-    <!-- Main Content goes here -->
-
-    <div class="card">
-        <div class="card-body">
-            <form action="{{ route('basic.store') }}" method="post">
-                @csrf
-
-                <div class="form-group">
-                  <label for="name">Name</label>
-                  <input type="text" class="form-control @error('name') is-invalid @enderror" name="name" id="name" placeholder="First name" autocomplete="off" value="{{ old('name') }}">
-                  @error('name')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
-                </div>
-
-                <div class="form-group">
-                  <label for="last_name">Last Name</label>
-                  <input type="text" class="form-control @error('last_name') is-invalid @enderror" name="last_name" id="last_name" placeholder="Last name" autocomplete="off" value="{{ old('last_name') }}">
-                  @error('last_name')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
-                </div>
-
-                <div class="form-group">
-                  <label for="email">Email</label>
-                  <input type="email" class="form-control @error('email') is-invalid @enderror" name="email" id="email" placeholder="Email" autocomplete="off" value="{{ old('email') }}">
-                  @error('email')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
-                </div>
-
-                <div class="form-group">
-                  <label for="password">Password</label>
-                  <input type="password" class="form-control @error('password') is-invalid @enderror" name="password" id="password" placeholder="Password" autocomplete="off">
-                  @error('password')
-                    <span class="text-danger">{{ $message }}</span>
-                  @enderror
-                </div>
-
-                <button type="submit" class="btn btn-primary">Save</button>
-                <a href="{{ route('basic.index') }}" class="btn btn-default">Back to list</a>
-
-            </form>
-        </div>
+{{-- Form Upload --}}
+<form id="upload-form" action="{{ route('dataset.import') }}" method="POST" enctype="multipart/form-data" class="mb-3">
+    @csrf
+    <div class="form-group">
+        <label for="name">Nama File</label>
+        <input type="text" name="name" class="form-control mr-2" required>
     </div>
 
-    <!-- End of Main Content -->
-@endsection
+    <div class="form-group d-flex align-items-center">
+        <input type="file" name="file" class="form-control mr-2" required>
+        <button type="submit" class="btn btn-success" id="upload-btn">
+            <span id="upload-text">Import Excel/CSV</span>
+            <span id="upload-spinner" class="spinner-border spinner-border-sm d-none ml-2" role="status"
+                aria-hidden="true"></span>
+        </button>
 
-@push('notif')
-    @if (session('success'))
-        <div class="alert alert-success border-left-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+    </div>
+</form>
 
-    @if (session('warning'))
-        <div class="alert alert-warning border-left-warning alert-dismissible fade show" role="alert">
-            {{ session('warning') }}
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-    @endif
+@if (!empty($headers))
+    {{-- Form Mapping Kolom --}}
+    <form action="{{ route('dataset.store') }}" method="POST" id="submit-form">
+        @csrf
 
-    @if (session('status'))
-        <div class="alert alert-success border-left-success" role="alert">
-            {{ session('status') }}
+        <div class="form-group">
+            <label>Kolom Tanggal</label>
+            <select name="date_col" class="form-control" required>
+                @foreach ($headers as $header)
+                    <option value="{{ $header }}">{{ $header }}</option>
+                @endforeach
+            </select>
         </div>
-    @endif
-@endpush
+
+        <div class="form-group">
+            <label>Kolom Penjualan</label>
+            <select name="sales_col" class="form-control" required>
+                @foreach ($headers as $header)
+                    <option value="{{ $header }}">{{ $header }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Kolom Kategori/Family</label>
+            <select name="family_col" class="form-control" required>
+                @foreach ($headers as $header)
+                    <option value="{{ $header }}">{{ $header }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label>Kolom Store</label>
+            <select name="store_col" class="form-control" required>
+                @foreach ($headers as $header)
+                    <option value="{{ $header }}">{{ $header }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit" class="btn btn-primary" id="submit-btn">
+            {{-- Spinner untuk loading --}}
+            <span id="submit-text">Simpan</span>
+            <span id="submit-spinner" class="spinner-border spinner-border-sm d-none ml-2" role="status"
+                aria-hidden="true"></span>
+        </button>
+    </form>
+@endif
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form upload file
+        const uploadForm = document.querySelector('form#upload-form');
+        const uploadBtn = document.getElementById('upload-btn');
+        const uploadSpinner = document.getElementById('upload-spinner');
+        const uploadText = document.getElementById('upload-text');
+
+        if (uploadForm) {
+            uploadForm.addEventListener('submit', function() {
+                uploadBtn.disabled = true;
+                uploadText.textContent = 'Mengunggah...';
+                uploadSpinner.classList.remove('d-none');
+            });
+        }
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Form upload file
+        const submitForm = document.querySelector('form#submit-form');
+        const submitBtn = document.getElementById('submit-btn');
+        const submitSpinner = document.getElementById('submit-spinner');
+        const submitText = document.getElementById('submit-text');
+
+        if (submitForm) {
+            submitForm.addEventListener('submit', function() {
+                submitBtn.disabled = true;
+                submitText.textContent = 'Proses...';
+                submitSpinner.classList.remove('d-none');
+            });
+        }
+    });
+</script>
