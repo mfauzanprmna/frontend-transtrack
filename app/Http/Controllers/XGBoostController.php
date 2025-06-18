@@ -61,14 +61,16 @@ class XGBoostController extends Controller
         }
     }
 
-    public function index(Request $request)
+    public function index()
     {
-        return $this->predict('prediksi.restock');
+        $models = ModelDataset::paginate(20);
+
+        return view('prediksi.restock', compact('models'));
     }
 
-    private function predict($view)
+    public function predict(Request $request)
     {
-        $model_id = request('model_id', 'f95e9000-c6ad-4706-8b89-ea727666df33');
+        $model_id = request('model_id');
         $n_weeks = request('n_weeks', 2);
 
         $models = ModelDataset::all();
@@ -83,7 +85,7 @@ class XGBoostController extends Controller
                 $result = $response->json();
                 $data = $result['forecast'];
 
-                return view($view, compact('data', 'model_id', 'n_weeks', 'models'));
+                return view('prediksi.restock', compact('data', 'model_id', 'n_weeks', 'models'));
             } else {
                 return back()->with('error', 'Forecast failed: ' . $response->body());
             }

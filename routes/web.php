@@ -54,9 +54,9 @@ Route::middleware('auth')->group(function () {
     Route::post('/train', [SarimaxController::class, 'train'])->name('sarimax.train');
 
     Route::post('/xgboost/train', [XGBoostController::class, 'train'])->name('xgboost-train');
-    Route::post('/forecast', [XGBoostController::class, 'index'])->name('forecast.xgboost');
 
-    Route::get('/restock', [XGBoostController::class, 'index'])->name('restock');
+    Route::get('/forecast', [XGBoostController::class, 'index'])->name('restock');
+    Route::post('/restock', [XGBoostController::class, 'predict'])->name('restock.predict');
 
     Route::get('/train', [TrainController::class, 'index'])->name('train');
 

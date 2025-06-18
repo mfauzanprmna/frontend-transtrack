@@ -26,7 +26,7 @@ class AIController extends Controller
 
         try {
             $response = Http::timeout(1000) // Set timeout sesuai kebutuhan
-                ->post('http://localhost:5000/qa', [
+                ->post('https://3089-103-36-14-70.ngrok-free.app/qa', [
                     'question' => $validated['question'],
                     'model_id' => $validated['model_id'] ?? null,
                     'format' => $validated['format'] ?? 'records',

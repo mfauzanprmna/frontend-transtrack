@@ -79,7 +79,7 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Prediksi:</h6>
                         <a class="collapse-item" href="{{ route('restock') }}">Prediksi Restock</a>
-                        <a class="collapse-item" href="{{ route('deepseek.index') }}">Prediksi Deepseek</a>
+                        <a class="collapse-item" href="{{ route('deepseek.index') }}">Prediksi AI Agent (QA)</a>
                         <a class="collapse-item" href="{{ route('train') }}">Training Model</a>
                         <a class="collapse-item" href="{{ route('stock.recommendation.view') }}">Stock Recomendation</a>
                     </div>

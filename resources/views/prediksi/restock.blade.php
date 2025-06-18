@@ -11,7 +11,7 @@
     @endif
 
     {{-- Forecast Form --}}
-    <form action="{{ route('forecast.xgboost') }}" method="POST" class="mb-4">
+    <form action="{{ route('restock.predict') }}" method="POST" class="mb-4">
         @csrf
         <div class="form-group">
             <label for="model_id">Model ID</label>
