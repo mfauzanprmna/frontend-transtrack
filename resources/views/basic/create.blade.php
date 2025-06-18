@@ -9,10 +9,6 @@
 {{-- Form Upload --}}
 <form id="upload-form" action="{{ route('dataset.import') }}" method="POST" enctype="multipart/form-data" class="mb-3">
     @csrf
-    <div class="form-group">
-        <label for="name">Nama File</label>
-        <input type="text" name="name" class="form-control mr-2" required>
-    </div>
 
     <div class="form-group d-flex align-items-center">
         <input type="file" name="file" class="form-control mr-2" required>

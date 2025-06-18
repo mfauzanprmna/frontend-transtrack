@@ -27,7 +27,7 @@ class TrainController extends Controller
     public function getRecommendation(Request $request)
     {
         try {
-            $response = Http::post('https://3089-103-36-14-70.ngrok-free.app/stock_recommendation', [
+            $response = Http::post('https://417f-103-36-14-70.ngrok-free.app/stock_recommendation', [
                 'model_id' => $request->input('model_id')
             ]);
 
