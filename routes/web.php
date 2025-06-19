@@ -39,7 +39,7 @@ Route::middleware('auth')->group(function () {
     Route::prefix('dataset')->name('dataset.')->group(function () {
         Route::get('/', [DatasetController::class, 'index'])->name('index');
         Route::get('/create', [DatasetController::class, 'create'])->name('create');
-        Route::post('/', [DatasetController::class, 'store'])->name('store');
+        Route::post('/store', [DatasetController::class, 'store'])->name('store');
         Route::get('/{id}/edit', [DatasetController::class, 'edit'])->name('edit');
         Route::put('/{id}', [DatasetController::class, 'update'])->name('update');
         Route::delete('/{id}', [DatasetController::class, 'destroy'])->name('destroy');

@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('main-content')
-    <h1 class="h3 mb-4 text-gray-800">Forecasting</h1>
+    <h1 class="h3 mb-4 text-gray-800">Forecast Sales</h1>
 
     {{-- Alert Section --}}
     @if (session('error'))
@@ -15,10 +15,10 @@
         @csrf
         <div class="form-group">
             <label for="model_id">Model ID</label>
-            <select name="model_id" class="form-control" required>
+            <select name="model_id" class="form-control">
                 <option value="">Pilih Model</option>
                 @foreach ($models as $model)
-                    <option value="{{ $model->name }}">{{ $model->model_name }} ({{ $model->family_name }})</option>
+                    <option value="{{ $model->model_name }}">{{ $model->model_name }}</option>
                 @endforeach
             </select>
         </div>

@@ -9,14 +9,36 @@ use Illuminate\Support\Facades\Http;
 
 class XGBoostController extends Controller
 {
-    protected $flaskUrl = 'http://localhost:5000'; // ganti jika Flask host berbeda
+    protected $flaskUrl;
+
+    public function __construct()
+    {
+        $this->flaskUrl = config('ml.flask_url');
+    }
 
     public function train(Request $request)
     {
-        $data = file_dataset::findOrFail($request->input('dataset_id', 1));
+        $request->validate([
+            'date_col' => 'required|string',
+            'sales_col' => 'required|string',
+            'store_col' => 'required|string',
+            'family_col' => 'required|string',
+        ]);
+
+        $dataset = [
+            'file_name' => $request->input('name'),
+            'file_path' => $request->input('file_path'),
+            'date_column' => $request->input('date_col'),
+            'sales_column' => $request->input('sales_col'),
+            'store_column' =>  $request->input('store_col'),
+            'family_column' => $request->input('family_col'),
+        ];
+
+        // Simpan data ke database
+        $file_dataset = file_dataset::create($dataset);
 
         // Ambil file dari storag
-        $filePath = storage_path('app/public/datasets/train.csv');
+        $filePath = storage_path('app/public/datasets/' . $request->input('name') . '.csv');
 
         if (!file_exists($filePath)) {
             return response()->json(['error' => 'File tidak ditemukan di server.'], 404);
@@ -30,11 +52,11 @@ class XGBoostController extends Controller
                 file_get_contents($filePath),
                 basename($filePath)
             )->post("{$this->flaskUrl}/train", [
-                'file' => $data->file_name,
-                'date_col' => $data->date_column,
-                'sales_col' => $data->sales_column,
-                'family_col' => $data->family_column,
-                'store_col' => $data->store_column,
+                'file' => $request->name,
+                'date_col' => $request->date_col,
+                'sales_col' => $request->sales_col,
+                'family_col' => $request->family_col,
+                'store_col' => $request->store_col,
             ]);
 
         if (!$response->successful()) {
@@ -51,9 +73,8 @@ class XGBoostController extends Controller
 
             // Simpan model_id ke database
             ModelDataset::create([
-                'dataset_id' => $request->input('dataset_id'),
+                'dataset_id' => $file_dataset->id,
                 'model_name' => $data['model_id'],
-                'family_name' => $request->input('family_val'),
                 'metrics' => json_encode($data['metrics'])
             ]);
 
@@ -76,10 +97,11 @@ class XGBoostController extends Controller
         $models = ModelDataset::all();
 
         try {
-            $response = Http::post("{$this->flaskUrl}/forecast", [
-                'model_id' => $model_id,
-                'n_weeks' => $n_weeks
-            ]);
+            $response = Http::timeout(1000000) // 120 detik
+                ->post("{$this->flaskUrl}/forecast", [
+                    'model_id' => $model_id,
+                    'n_weeks' => $n_weeks
+                ]);
 
             if ($response->successful()) {
                 $result = $response->json();

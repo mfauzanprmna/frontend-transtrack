@@ -9,13 +9,19 @@ use Illuminate\Support\Facades\Http;
 
 class AIController extends Controller
 {
+
+    protected $flaskUrl;
+
+    public function __construct()
+    {
+        $this->flaskUrl = config('ml.flask_url');
+    }
     public function index()
     {
         $models = ModelDataset::paginate(20);
         return view('prediksi.deepseek', compact('models'));
     }
 
-    protected $flaskUrl = 'http://localhost:5000'; // ganti jika Flask host berbeda
     public function askDeepSeek(Request $request)
     {
         $validated = $request->validate([
@@ -26,7 +32,7 @@ class AIController extends Controller
 
         try {
             $response = Http::timeout(1000) // Set timeout sesuai kebutuhan
-                ->post('https://417f-103-36-14-70.ngrok-free.app/qa', [
+                ->post("{$this->flaskUrl}/qa", [
                     'question' => $validated['question'],
                     'model_id' => $validated['model_id'] ?? null,
                     'format' => $validated['format'] ?? 'records',

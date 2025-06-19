@@ -83,7 +83,8 @@ class DatasetController extends Controller
 
         try {
             $data = [
-                'file_name' => $request->input('name', 'train.csv'),
+                'file_name' => $request->input('name'),
+                'file_path' => $request->input('file_path'),
                 'date_column' => $request->input('date_col'),
                 'sales_column' => $request->input('sales_col'),
                 'store_column' =>  $request->input('store_col'),
@@ -129,7 +130,7 @@ class DatasetController extends Controller
     public function destroy($id)
     {
         try {
-            $dataset = Dataset::findOrFail($id);
+            $dataset = file_dataset::findOrFail($id);
             $dataset->delete();
 
             return redirect()->route('dataset.index')->with('success', 'Data deleted successfully.');
@@ -147,6 +148,9 @@ class DatasetController extends Controller
 
         $filename = $request->name . '.' . $request->file('file')->getClientOriginalExtension();
         $path = 'datasets/' . $filename;
+
+        $datasets = file_dataset::paginate(20);
+
 
         // Cek apakah file sudah ada
         if (storage::exists($path)) {
@@ -170,7 +174,9 @@ class DatasetController extends Controller
 
         return view('basic.index', [
             'headers' => $headers,
-            'filename' => $path,
+            'file_path' => $path,
+            'filename' => $request->name,
+            'datasets' => $datasets,
         ]);
     }
 

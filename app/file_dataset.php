@@ -10,6 +10,7 @@ class file_dataset extends Model
 
     protected $fillable = [
         'file_name',
+        'file_path',
         'date_column',
         'sales_column',
         'family_column',
@@ -17,8 +18,8 @@ class file_dataset extends Model
         'store_column',
     ];
 
-    public function getFileNameAttribute($value)
+    public function modelDatasets()
     {
-        return asset('storage/' . $value);
+        return $this->hasMany(ModelDataset::class, 'dataset_id');
     }
 }

@@ -16,9 +16,13 @@ class HomeController extends Controller
      *
      * @return void
      */
+
+    protected $flaskUrl;
+
     public function __construct()
     {
         $this->middleware('auth');
+        $this->flaskUrl = config('ml.flask_url');
     }
 
     /**
@@ -47,9 +51,9 @@ class HomeController extends Controller
         $model_id = $request->input('model_id');
         $n_weeks = $request->input('n_weeks', 4); // Default to 4 weeks if not provided
 
-        if (!$model_id) {
-            return back()->with('error', 'Model ID is required.');
-        }
+        // if (!$model_id) {
+        //     return back()->with('error', 'Model ID is required.');
+        // }
 
         $users = User::count();
         $models = ModelDataset::all();
@@ -60,10 +64,11 @@ class HomeController extends Controller
         ];
 
         try {
-            $response = Http::post("http://localhost:5000/forecast", [
-                'model_id' => $model_id,
-                'n_weeks' => $n_weeks
-            ]);
+            $response = Http::timeout(1000000) // Set timeout sesuai kebutuhan
+                ->post("{$this->flaskUrl}/forecast", [
+                    'model_id' => $model_id,
+                    'n_weeks' => $n_weeks
+                ]);
 
             if ($response->successful()) {
                 $result = $response->json();

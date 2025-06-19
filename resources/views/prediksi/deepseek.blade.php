@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('main-content')
-    <h1 class="h3 mb-4 text-gray-800"><i class="fas fa-question-circle"></i> Tanya Prediksi (QA)</h1>
+    <h1 class="h3 mb-4 text-gray-800"><i class="fas fa-question-circle"></i> Tanya Agent (QA)</h1>
 
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>

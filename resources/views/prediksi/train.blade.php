@@ -25,7 +25,6 @@
                     <th>No</th>
                     <th>Nama Dataset</th>
                     <th>Nama Model</th>
-                    <th>Family Name</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,7 +34,6 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $dataset->fileDataset->file_name }}</td>
                             <td>{{ $dataset->model_name }}</td>
-                            <td>{{ $dataset->family_name, '-' }}</td>
                         </tr>
                     @endforeach
                 @else

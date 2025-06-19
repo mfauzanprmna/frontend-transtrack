@@ -6,9 +6,22 @@
     </div>
 @endif
 
+@if (session('success'))
+    <div class="alert alert-success">
+        {{ session('success') }}
+    </div>
+@endif
+@if (session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
 {{-- Form Upload --}}
 <form id="upload-form" action="{{ route('dataset.import') }}" method="POST" enctype="multipart/form-data" class="mb-3">
     @csrf
+    <div class="form-group">
+        <label for="name">Nama File</label>
+        <input type="text" name="name" class="form-control mr-2" required>
+    </div>
 
     <div class="form-group d-flex align-items-center">
         <input type="file" name="file" class="form-control mr-2" required>
@@ -23,9 +36,10 @@
 
 @if (!empty($headers))
     {{-- Form Mapping Kolom --}}
-    <form action="{{ route('dataset.store') }}" method="POST" id="submit-form">
+    <form action="{{ route('xgboost-train') }}" method="POST" id="submit-form">
         @csrf
-
+        <input type="hidden" name="name" value="{{ $filename }}">
+        <input type="hidden" name="file_path" value="{{ $file_path }}">
         <div class="form-group">
             <label>Kolom Tanggal</label>
             <select name="date_col" class="form-control" required>
@@ -64,7 +78,7 @@
 
         <button type="submit" class="btn btn-primary" id="submit-btn">
             {{-- Spinner untuk loading --}}
-            <span id="submit-text">Simpan</span>
+            <span id="submit-text">Training</span>
             <span id="submit-spinner" class="spinner-border spinner-border-sm d-none ml-2" role="status"
                 aria-hidden="true"></span>
         </button>
