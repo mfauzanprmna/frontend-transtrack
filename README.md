@@ -111,17 +111,29 @@ Before running or developing the frontend, you **must** clone and start the back
 
 ## Usage
 
-- **Login:**  
-  Email: `admin@mail.com`  
-  Password: `password`
-- **Register:**  
-  Use the registration page to create a new account.
-- **Dashboard:**  
-  Visualize predictions and recommendations.
-- **Dataset Management:**  
-  Upload and view datasets through the dataset management tab.
-- **AI Agent:**  
-  Access the AI consultation agent for data-driven questions.
+🔐 Login Page
+A simple and clean login interface using SB Admin 2.
+Use the default credentials to access the dashboard:
+
+Email: `admin@mail.com`
+
+Password: `password`
+
+📊 Graph Forecast Page
+Displays interactive forecast charts and trends based on uploaded datasets.
+This helps visualize inventory predictions over time using models like XGBoost and SARIMAX.
+
+📦 Stock Recommendation
+Presents a table and visualization of items that need restocking based on forecast analysis.
+Useful for identifying critical inventory levels and taking timely action.
+
+📁 Forecast Table
+Tabular display of all forecasted data points, sortable by date, item, or store.
+Ideal for reviewing and exporting detailed forecast results.
+
+🤖 AI Agent (Q&A)
+Chat-based assistant for getting insights from your data.
+You can ask questions like “Which items will run out next week?” or “Summarize trends for store A.”
 
 ---
 
