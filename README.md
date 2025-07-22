@@ -52,7 +52,7 @@ e: `admin@mail.com`
 
 p : `password`
 
-<img src="https://imgur.com/a/RwUE6mw">
+<img src="https://imgur.com/a/RwUE6mw.png">
 
 ---
 
